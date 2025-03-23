@@ -1,5 +1,6 @@
 import connection from '../data/db.js';
 
+
 function index(req, res) {
   const sql = 'SELECT * FROM movies';  
 
@@ -22,6 +23,7 @@ function show(req, res) {
 
   const movieSql = 'SELECT * FROM movies WHERE id= ?'; 
   const reviewsSql = 'SELECT * FROM reviews WHERE movie_id = ?';
+  
   connection.query(movieSql, [id], (err, results) => {
     if (err) return res.status(500).json({ error: 'Errore lato server SHOW function' });
 
@@ -40,6 +42,7 @@ function show(req, res) {
   });
 }
 
+
 function destroy(req, res) {
   const { id } = req.params;
 
@@ -52,4 +55,29 @@ function destroy(req, res) {
   });
 }
 
-export { index, show, destroy };
+
+function addReview(req, res) {
+  const { id } = req.params;
+  const { name, vote, text } = req.body;
+  const sql = 'INSERT INTO reviews (movie_id, name, vote, text) VALUES (?, ?, ?, ?)';
+  connection.query(sql, [id, name, vote, text], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Errore durante l\'aggiunta della recensione' });
+    }
+
+   
+    const newReview = {
+      id: results.insertId,
+      movie_id: id,
+      name,
+      vote,
+      text,
+      created_at: new Date() 
+    };
+
+    res.status(201).json(newReview);
+  });
+}
+
+export { index, show, destroy, addReview };

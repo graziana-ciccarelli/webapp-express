@@ -12,7 +12,7 @@ import imagePathMiddleware from './middlewares/imagePath.js';
 
 
 const corsOptions = {
-  origin: 'http://localhost:5174',
+  origin: 'http://localhost:5173',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],  
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
@@ -24,7 +24,9 @@ app.use(cors(corsOptions));
 app.use(imagePathMiddleware);
 
 
+
 app.use('/movies', movieRouter);
+
 
 
 app.listen(port, () => {
